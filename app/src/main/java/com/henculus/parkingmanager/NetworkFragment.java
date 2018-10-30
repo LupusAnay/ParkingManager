@@ -1,7 +1,6 @@
 package com.henculus.parkingmanager;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,10 +16,9 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkFragment extends Fragment {
-    private static final String TAG = "NetworkFragment";
+    private static final String TAG = "NetworkFragment.java";
     private static final String URL_KEY = "UrlKey";
 
     private DownloadCallback _callback;
@@ -36,8 +34,8 @@ public class NetworkFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        super.onAttach(context);
         _callback = (DownloadCallback) context;
+        super.onAttach(context);
     }
 
     @Override
@@ -61,14 +59,14 @@ public class NetworkFragment extends Fragment {
         return networkFragment;
     }
 
-    public void startDownload() {
+    public void startDownload(String date) {
         cancelDownload();
         _downloadTask = new DownloadTask(_callback);
-        _downloadTask.execute(_urlString);
+        _downloadTask.execute(_urlString, date);
     }
 
 
-    private void cancelDownload() {
+    public void cancelDownload() {
         if (_downloadTask != null) {
             _downloadTask.cancel(true);
         }
@@ -107,13 +105,14 @@ public class NetworkFragment extends Fragment {
                     cancel(true);
                 }
             }
+
         }
 
         @Override
-        protected DownloadTask.Result doInBackground(String... urls) {
+        protected Result doInBackground(String... params) {
             Result result = null;
-            if (!isCancelled() && urls != null && urls.length > 0) {
-                String urlString = "http://192.168.0.100:9999";
+            if (!isCancelled() && params != null && params.length > 0) {
+                String urlString = params[0] + "/?date=" + params[1];
 
                 try {
                     URL url = new URL(urlString);
@@ -125,7 +124,6 @@ public class NetworkFragment extends Fragment {
                     }
 
                 } catch (Exception e) {
-                    Log.v("FUCK", e.getMessage());
                     result = new Result(e);
                 }
             }
@@ -145,11 +143,10 @@ public class NetworkFragment extends Fragment {
         }
 
         @Override
-        protected void onCancelled(Result result){
+        protected void onCancelled(Result result) {
         }
 
-        private String downloadUrl(URL url) throws IOException{
-            Log.v("FUCK", "downloadUrl:  ");
+        private String downloadUrl(URL url) throws IOException {
             InputStream stream = null;
             HttpURLConnection connection = null;
             String result = null;
