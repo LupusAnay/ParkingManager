@@ -59,10 +59,10 @@ public class NetworkFragment extends Fragment {
         return networkFragment;
     }
 
-    public void startDownload(String date) {
+    public void startDownload(String file, String date, String place) {
         cancelDownload();
         _downloadTask = new DownloadTask(_callback);
-        _downloadTask.execute(_urlString, date);
+        _downloadTask.execute(_urlString, file, date, place);
     }
 
 
@@ -112,7 +112,7 @@ public class NetworkFragment extends Fragment {
         protected Result doInBackground(String... params) {
             Result result = null;
             if (!isCancelled() && params != null && params.length > 0) {
-                String urlString = params[0] + "/?date=" + params[1];
+                String urlString = params[0] + params[1] + "/?date=" + params[2] + "&place=" + params[3];
 
                 try {
                     URL url = new URL(urlString);

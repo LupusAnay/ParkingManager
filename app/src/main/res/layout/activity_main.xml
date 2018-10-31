@@ -26,9 +26,17 @@
     <Spinner
         android:id="@+id/spinner1"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:entries="@array/catalyst">
+        android:layout_height="90dp">
     </Spinner>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:height="90dp"
+        android:onClick="sendData"
+        android:enabled="false"
+        android:text="@string/take"/>
 
 
 

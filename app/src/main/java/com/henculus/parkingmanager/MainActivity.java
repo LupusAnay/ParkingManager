@@ -1,6 +1,5 @@
 package com.henculus.parkingmanager;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,8 +8,17 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends FragmentActivity implements DownloadCallback<String>,
@@ -24,9 +32,16 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
 
     private Spinner spinner;
 
-    public void startDownload(String date) {
+    private Button button;
+
+    ArrayList<String> AvaliablePlaces;
+
+    private String _date;
+
+
+    public void startDownload(String file, String date, String place) {
         if (!_downloading && _networkFragment != null) {
-            _networkFragment.startDownload(date);
+            _networkFragment.startDownload(file, date, place);
             _downloading = true;
 
         } else {
@@ -44,15 +59,46 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
 
         fuck = findViewById(R.id.fuck);
 
-        _networkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), "http://192.168.0.100:5000/");
+        button = findViewById(R.id.button);
+
+        _networkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), "http://192.168.100.15/");
         fuck.setText("FUCK");
-        //friendDownload();
+
+        AvaliablePlaces = new ArrayList<>();
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                button.setEnabled(true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //Чилим
+            }
+        });
     }
 
     @Override
     public void updateFromDownload(String result) {
         spinner.setEnabled(true);
         fuck.setText(result);
+        try {
+            AvaliablePlaces.clear();
+            JSONObject jsonObject = new JSONObject(result);
+            if (jsonObject.getInt("success") == 1) {
+                JSONArray jsonArray = jsonObject.getJSONArray("PlacesList");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    int jsonObject1 = jsonArray.getInt(i);
+                    String place = Integer.toString(jsonObject1);
+                    AvaliablePlaces.add(place);
+                }
+            }
+            spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, AvaliablePlaces));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -103,7 +149,13 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
 
     @Override
     public void datePicked(String date) {
-        startDownload(date);
+        _date = date;
+        startDownload("test.php", date, "");
+    }
+
+    public void sendData(View view) {
+        String chosen_place = spinner.getSelectedItem().toString();
+        startDownload("test.php", _date, chosen_place);
     }
 }
 

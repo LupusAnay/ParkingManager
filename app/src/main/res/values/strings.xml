@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ParkingManager</string>
     <string name="pick_date">ВЫБЕРИ</string>
+    <string name="take">Бронировать</string>
 
     <string-array name="catalyst">
         <item>Барсик</item>
