@@ -1,6 +1,7 @@
 package com.henculus.parkingmanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.DialogFragment;
@@ -28,24 +29,23 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
 
     private boolean _downloading = false;
 
-    private TextView fuck;
-
     private Spinner spinner;
 
     private Button button;
+
+    String carNumber;
 
     ArrayList<String> AvaliablePlaces;
 
     private String _date;
 
 
-    public void startDownload(String file, String date, String place) {
+    public void startDownload(String file, String date, String place, String car_number) {
         if (!_downloading && _networkFragment != null) {
-            _networkFragment.startDownload(file, date, place);
+            _networkFragment.startDownload(file, date, place, car_number);
             _downloading = true;
 
         } else {
-            fuck.setText("Start download error");
         }
     }
 
@@ -54,15 +54,17 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
+        carNumber = intent.getExtras().getString("carNumber","");
+
+
         spinner = findViewById(R.id.spinner1);
         spinner.setEnabled(false);
 
-        fuck = findViewById(R.id.fuck);
 
         button = findViewById(R.id.button);
 
         _networkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), "http://192.168.100.15/");
-        fuck.setText("FUCK");
 
         AvaliablePlaces = new ArrayList<>();
 
@@ -83,7 +85,6 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
     @Override
     public void updateFromDownload(String result) {
         spinner.setEnabled(true);
-        fuck.setText(result);
         try {
             AvaliablePlaces.clear();
             JSONObject jsonObject = new JSONObject(result);
@@ -150,12 +151,12 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
     @Override
     public void datePicked(String date) {
         _date = date;
-        startDownload("test.php", date, "");
+        startDownload("test.php", date, "", "");
     }
 
     public void sendData(View view) {
         String chosen_place = spinner.getSelectedItem().toString();
-        startDownload("test.php", _date, chosen_place);
+        startDownload("test.php", _date, chosen_place, carNumber);
     }
 }
 
