@@ -33,7 +33,7 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
 
     private Button button;
 
-    String carNumber;
+    String _car_number;
 
     ArrayList<String> AvaliablePlaces;
 
@@ -55,7 +55,7 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        carNumber = intent.getExtras().getString("carNumber","");
+        _car_number = intent.getExtras().getString("carNumber","");
 
 
         spinner = findViewById(R.id.spinner1);
@@ -156,7 +156,7 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
 
     public void sendData(View view) {
         String chosen_place = spinner.getSelectedItem().toString();
-        startDownload("test.php", _date, chosen_place, carNumber);
+        startDownload("test.php", _date, chosen_place, _car_number);
     }
 }
 
