@@ -91,8 +91,8 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
             if (jsonObject.getInt("success") == 1) {
                 JSONArray jsonArray = jsonObject.getJSONArray("PlacesList");
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    int jsonObject1 = jsonArray.getInt(i);
-                    String place = Integer.toString(jsonObject1);
+                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    String place = jsonObject1.getString("PLACE_ID");
                     AvaliablePlaces.add(place);
                 }
             }
