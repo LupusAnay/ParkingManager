@@ -29,6 +29,10 @@
         android:onClick="sendData"
         android:enabled="false"
         android:text="@string/take"/>
+    <TextView
+        android:id="@+id/debug_field"
+        android:layout_width="match_parent"
+        android:layout_height="90dp" />
 
 
 

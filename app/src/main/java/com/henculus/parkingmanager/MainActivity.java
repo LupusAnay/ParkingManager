@@ -33,6 +33,8 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
 
     private Button button;
 
+    TextView debugField;
+
     String _car_number;
 
     ArrayList<String> AvaliablePlaces;
@@ -61,10 +63,10 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
         spinner = findViewById(R.id.spinner1);
         spinner.setEnabled(false);
 
-
+        debugField = findViewById(R.id.debug_field);
         button = findViewById(R.id.button);
 
-        _networkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), "http://192.168.100.15/");
+        _networkFragment = NetworkFragment.getInstance(getSupportFragmentManager(), "http://172.20.47.2/Smolyanov/");
 
         AvaliablePlaces = new ArrayList<>();
 
@@ -89,17 +91,20 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
             AvaliablePlaces.clear();
             JSONObject jsonObject = new JSONObject(result);
             if (jsonObject.getInt("success") == 1) {
-                JSONArray jsonArray = jsonObject.getJSONArray("PlacesList");
+                JSONObject jsonObject2 = jsonObject.getJSONObject("0");
+                JSONArray jsonArray = jsonObject2.getJSONArray("PLACE_ID");
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    String place = jsonObject1.getString("PLACE_ID");
+                    int jsonObject1 = jsonArray.getInt(i);
+                    String place = Integer.toString(jsonObject1);
                     AvaliablePlaces.add(place);
+
                 }
             }
             spinner.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, AvaliablePlaces));
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        debugField.setText(result);
     }
 
     @Override
@@ -151,12 +156,12 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
     @Override
     public void datePicked(String date) {
         _date = date;
-        startDownload("test.php", date, "", "");
+        startDownload("main.php", date, "", "");
     }
 
     public void sendData(View view) {
         String _chosen_place = spinner.getSelectedItem().toString();
-        startDownload("test.php", _date, _chosen_place, _car_number);
+        startDownload("main.php", _date, _chosen_place, _car_number);
     }
 }
 
