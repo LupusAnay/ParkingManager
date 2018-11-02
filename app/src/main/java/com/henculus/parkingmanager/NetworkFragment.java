@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,21 +16,21 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class NetworkFragment extends Fragment {
     private static final String TAG = "NetworkFragment.java";
-    private static final String URL_KEY = "UrlKey";
 
     private DownloadCallback _callback;
     private DownloadTask _downloadTask;
-    private String _urlString;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        _urlString = getArguments().getString(URL_KEY);
     }
 
     @Override
@@ -50,19 +51,24 @@ public class NetworkFragment extends Fragment {
         super.onDestroy();
     }
 
-    static NetworkFragment getInstance(FragmentManager fragmentManager, String url) {
+    static NetworkFragment getInstance(FragmentManager fragmentManager) {
         NetworkFragment networkFragment = new NetworkFragment();
-        Bundle args = new Bundle();
-        args.putString(URL_KEY, url);
-        networkFragment.setArguments(args);
         fragmentManager.beginTransaction().add(networkFragment, TAG).commit();
         return networkFragment;
     }
 
-    public void startDownload(String file, String date, String place, String car_number) {
+    public void startDownload(URL url, Map<String, String> params) {
         cancelDownload();
+        StringBuilder request = new StringBuilder(url.toString());
+        request.append("?");
+        for (Map.Entry<String, String> pair : params.entrySet()) {
+            request.append(pair.getKey());
+            request.append("=");
+            request.append(pair.getValue());
+            request.append("&");
+        }
         _downloadTask = new DownloadTask(_callback);
-        _downloadTask.execute(_urlString, file, date, place, car_number);
+        _downloadTask.execute(request.toString());
     }
 
 
@@ -112,7 +118,7 @@ public class NetworkFragment extends Fragment {
         protected Result doInBackground(String... params) {
             Result result = null;
             if (!isCancelled() && params != null && params.length > 0) {
-                String urlString = params[0] + params[1] + "/?date=" + params[2] + "&place=" + params[3] + "&car_number=" + params[4];
+                String urlString = params[0];
 
                 try {
                     URL url = new URL(urlString);
@@ -152,8 +158,8 @@ public class NetworkFragment extends Fragment {
             String result = null;
             try {
                 connection = (HttpURLConnection) url.openConnection();
-                connection.setReadTimeout(40000);
-                connection.setConnectTimeout(40000);
+                connection.setReadTimeout(3000);
+                connection.setConnectTimeout(3000);
                 connection.setRequestMethod("GET");
                 connection.setDoInput(true);
                 connection.connect();
@@ -180,8 +186,8 @@ public class NetworkFragment extends Fragment {
         }
 
         private String readStream(InputStream stream, int maxReadSize) throws IOException, UnsupportedOperationException {
-            Reader reader = null;
-            reader = new InputStreamReader(stream, "UTF-8");
+            Reader reader;
+            reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
             char[] rawBuffer = new char[maxReadSize];
             int readSize;
             StringBuilder buffer = new StringBuilder();

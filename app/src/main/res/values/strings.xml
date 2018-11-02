@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">ParkingManager</string>
-    <string name="take">Бронировать</string>
     <string name="prompt_email">имя компании</string>
     <string name="prompt_email1">заказчик</string>
     <string name="prompt_password">адрес</string>
@@ -29,6 +28,7 @@
     <string name="reg_button">Регистрация</string>
     <string name="parking_button">Парковка</string>
     <string name="pick_date">Выбрать дату</string>
+    <string name="take">Бронировать</string>
     <string-array name="catalyst">
         <item>Барсик</item>
         <item>Мурзик</item>
