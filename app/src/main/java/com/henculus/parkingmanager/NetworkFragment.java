@@ -112,7 +112,7 @@ public class NetworkFragment extends Fragment {
         protected Result doInBackground(String... params) {
             Result result = null;
             if (!isCancelled() && params != null && params.length > 0) {
-                String urlString = params[0] + params[1] + "/?date=" + params[2] + "&place=" + params[3] + "$car_number=" + params[4];
+                String urlString = params[0] + params[1] + "/?date=" + params[2] + "&place=" + params[3] + "&car_number=" + params[4];
 
                 try {
                     URL url = new URL(urlString);
@@ -152,8 +152,8 @@ public class NetworkFragment extends Fragment {
             String result = null;
             try {
                 connection = (HttpURLConnection) url.openConnection();
-                connection.setReadTimeout(3000);
-                connection.setConnectTimeout(3000);
+                connection.setReadTimeout(40000);
+                connection.setConnectTimeout(40000);
                 connection.setRequestMethod("GET");
                 connection.setDoInput(true);
                 connection.connect();

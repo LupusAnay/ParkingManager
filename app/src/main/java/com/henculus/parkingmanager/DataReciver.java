@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class DataReciver {
     //Запросы к БД
 
-    public final static String USERS_URI = "http://172.20.47.2/user7/auth.php";
+    public final static String USERS_URI = "http://172.20.47.2/Smolyanov/auth.php";
     public final static String SELECT_USERS = "1";
     public final static String INSERT_USERS = "2";
     public final static String UPDATE_USERS = "3";
@@ -157,8 +157,8 @@ public class DataReciver {
         try {
             url = new URL(USERS_URI);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(40000);
+            conn.setConnectTimeout(40000);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -170,8 +170,8 @@ public class DataReciver {
                             //.appendQueryParameter("id_users", String.valueOf(values.getInt("id_users", 0)))
                     .appendQueryParameter("CUSTOMER_NAME", values.getString("CREDIT_LIMIT", ""))
                     .appendQueryParameter("CITY", values.getString("CUSTOMER_NAME", ""))
-                    .appendQueryParameter("COUNTRY", values.getString("CITY", ""))
-                    .appendQueryParameter("PHONE_NUMDER", values.getString("PHONE_NUMDER", ""))
+                    .appendQueryParameter("CARNUMBER", values.getString("CITY", ""))
+                    .appendQueryParameter("CELLPHONENUMBER", values.getString("CELLPHONENUMBER", ""))
                     .appendQueryParameter("CREDIT_LIMIT", values.getString("COUNTRY", ""));
 
             String query = builder.build().getEncodedQuery();
@@ -198,6 +198,7 @@ public class DataReciver {
             else  {
                 result = Integer.valueOf(s);
             }
+
         }
         catch (MalformedURLException e) {
             e.printStackTrace();

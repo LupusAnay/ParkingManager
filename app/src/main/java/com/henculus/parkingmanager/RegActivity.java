@@ -167,7 +167,7 @@ public class RegActivity extends AppCompatActivity implements LoaderCallbacks<Cu
             bundle.putString("ADRESS", String.valueOf(users.getuSurname()));
             bundle.putString("CITY", String.valueOf(users.getuName()));
             bundle.putString("COUNTRY", String.valueOf(users.getuPatronymic()));
-            bundle.putString("PHONE_NUMDER", String.valueOf(users.getuPhoneNumber()));
+            bundle.putString("CELLPHONENUMBER", String.valueOf(users.getuPhoneNumber()));
             bundle.putString("CREDIT_LIMIT", String.valueOf(users.getuEmail()));
 
 
