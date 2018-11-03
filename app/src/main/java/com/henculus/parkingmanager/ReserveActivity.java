@@ -15,18 +15,11 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class MainActivity extends FragmentActivity implements DownloadCallback<String>,
+public class ReserveActivity extends FragmentActivity implements DownloadCallback<String>,
         DatePickedCallback<String> {
 
     private static final String SERVER_HOST = "http://192.168.0.100:5000/";
@@ -48,11 +41,10 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
     private String _date;
 
 
-    public final void startDownload(URL url, Map<String, String> params) {
+    public final void startDownload(String url, Map<String, String> params) {
         if (!_downloading && _networkFragment != null) {
             _networkFragment.startDownload(url, params);
             _downloading = true;
-
         }
     }
 
@@ -92,23 +84,26 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
     @Override
     public void updateFromDownload(String result) {
         spinner.setEnabled(true);
-//        try {
-//            AvailablePlaces.clear();
-//            JSONObject jsonObject = new JSONObject(result);
-//            if (jsonObject.getInt("success") == 1) {
-//                JSONObject jsonObject2 = jsonObject.getJSONObject("0");
-//                JSONArray jsonArray = jsonObject2.getJSONArray("PLACE_ID");
-//                for (int i = 0; i < jsonArray.length(); i++) {
-//                    int jsonObject1 = jsonArray.getInt(i);
-//                    String place = Integer.toString(jsonObject1);
-//                    AvailablePlaces.add(place);
-//
-//                }
-//            }
-//            spinner.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, AvailablePlaces));
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        JSONArray places;
+        try {
+            places = new JSONArray(result);
+            for (int i = 0; i < places.length(); i++) {
+                String place = places.getString(i);
+                AvailablePlaces.add(place);
+            }
+        } catch (JSONException e) {
+            debugField.setText("Получены невалидные данные");
+            e.printStackTrace();
+            return;
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                ReserveActivity.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                AvailablePlaces);
+
+        spinner.setAdapter(adapter);
+
         debugField.setText(result);
     }
 
@@ -162,11 +157,8 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
         _date = date;
         Map<String, String> params = new HashMap<>();
         params.put("date", date);
-        try {
-            startDownload(new URL(SERVER_HOST + "places"), params);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        startDownload(SERVER_HOST + "places", params);
+
     }
 
     public void reserve(View view) {
@@ -175,11 +167,8 @@ public class MainActivity extends FragmentActivity implements DownloadCallback<S
         params.put("date", _date);
         params.put("place", place);
         params.put("car_id", _carNumber);
-        try {
-            startDownload(new URL( SERVER_HOST + "reserve"), params);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        startDownload(SERVER_HOST + "reserve", params);
+
     }
 }
 

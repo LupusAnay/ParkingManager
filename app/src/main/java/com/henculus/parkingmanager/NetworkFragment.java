@@ -57,9 +57,9 @@ public class NetworkFragment extends Fragment {
         return networkFragment;
     }
 
-    public void startDownload(URL url, Map<String, String> params) {
+    public void startDownload(String url, Map<String, String> params) {
         cancelDownload();
-        StringBuilder request = new StringBuilder(url.toString());
+        StringBuilder request = new StringBuilder(url);
         request.append("?");
         for (Map.Entry<String, String> pair : params.entrySet()) {
             request.append(pair.getKey());

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".ReserveActivity">
 
 
     <Button
@@ -26,7 +26,7 @@
         android:height="90dp"
         android:enabled="false"
         android:onClick="reserve"
-        android:text="@string/take" />
+        android:text="@string/reserve" />
 
     <TextView
         android:id="@+id/debug_field"
