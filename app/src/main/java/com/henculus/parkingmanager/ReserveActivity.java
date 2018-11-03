@@ -52,7 +52,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        _carNumber = Objects.requireNonNull(intent.getExtras()).getString("carNumber", "");
+        _carNumber = Objects.requireNonNull(intent.getExtras()).getString("car_id", "");
 
 
         spinner = findViewById(R.id.spinner);
@@ -90,7 +90,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
                 AvailablePlaces.add(place);
             }
         } catch (JSONException e) {
-            debugField.setText("Получены невалидные данные");
+            debugField.setText(getString(R.string.server_error));
             e.printStackTrace();
             return;
         }

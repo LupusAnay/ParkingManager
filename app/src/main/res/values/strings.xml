@@ -12,4 +12,5 @@
     <string name="first_name">Имя</string>
     <string name="address_empty_error">Адрес не должен быть пустым</string>
     <string name="empty_error">Поле не должно быть пустым</string>
+    <string name="server_error">Получены невалидные данные</string>
 </resources>
