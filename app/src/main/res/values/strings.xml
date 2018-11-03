@@ -10,4 +10,6 @@
     <string name="address">Адрес</string>
     <string name="second_name">Фамилия</string>
     <string name="first_name">Имя</string>
+    <string name="address_empty_error">Адрес не должен быть пустым</string>
+    <string name="empty_error">Поле не должно быть пустым</string>
 </resources>

@@ -7,50 +7,80 @@
     tools:context=".RegActivity">
 
 
-    <EditText
-        android:id="@+id/first_name"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints="Иван"
-        android:ems="10"
-        android:hint="@string/first_name"
-        android:inputType="textPersonName" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/second_name"
+        <EditText
+            android:id="@+id/first_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="Иван"
+            android:ems="10"
+            android:hint="@string/first_name"
+            android:inputType="textPersonName" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints="Иванов"
-        android:ems="10"
-        android:hint="@string/second_name"
-        android:inputType="textPersonName" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/address"
+        <EditText
+            android:id="@+id/second_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="Иванов"
+            android:ems="10"
+            android:hint="@string/second_name"
+            android:inputType="textPersonName" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints="Санкт-Петербург"
-        android:ems="10"
-        android:hint="@string/address"
-        android:inputType="textPostalAddress" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/phone"
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="Санкт-Петербург"
+            android:ems="10"
+            android:hint="@string/address"
+            android:inputType="textPostalAddress" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints="89119119191"
-        android:ems="10"
-        android:hint="@string/phone"
-        android:inputType="phone" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/car_id"
-        android:layout_width="554dp"
-        android:layout_height="wrap_content"
-        android:autofillHints="a932ax"
-        android:ems="10"
-        android:hint="@string/car_id"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="89119119191"
+            android:ems="10"
+            android:hint="@string/phone"
+            android:inputType="phone" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/car_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/car_id"
+            android:inputType="textShortMessage" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/register"
