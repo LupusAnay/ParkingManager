@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 
-public class RegActivity extends FragmentActivity implements DownloadCallback<String>, android.text.TextWatcher {
+public class RegActivity extends FragmentActivity implements DownloadCallback<String>, TextWatcher {
 
     private boolean _downloading;
 
