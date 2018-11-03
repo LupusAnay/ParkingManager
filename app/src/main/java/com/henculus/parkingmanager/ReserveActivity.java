@@ -22,8 +22,6 @@ import java.util.*;
 public class ReserveActivity extends FragmentActivity implements DownloadCallback<String>,
         DatePickedCallback<String> {
 
-    private static final String SERVER_HOST = "http://192.168.0.100:5000/";
-
     private NetworkFragment _networkFragment;
 
     private boolean _downloading = false;

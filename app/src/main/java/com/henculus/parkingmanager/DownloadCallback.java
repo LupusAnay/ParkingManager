@@ -3,6 +3,8 @@ package com.henculus.parkingmanager;
 import android.net.NetworkInfo;
 
 interface DownloadCallback<T> {
+    String SERVER_HOST = "http://192.168.0.100:5000/";
+
     interface Progress {
         int ERROR = -1;
         int CONNECT_SUCCESS = 0;
