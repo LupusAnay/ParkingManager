@@ -82,6 +82,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
     @Override
     public void updateFromDownload(String result) {
         spinner.setEnabled(true);
+        AvailablePlaces.clear();
         JSONArray places;
         try {
             places = new JSONArray(result);
@@ -160,13 +161,14 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
     }
 
     public void reserve(View view) {
+        if (spinner.getSelectedItem() == null)
+            return;
         String place = spinner.getSelectedItem().toString();
         Map<String, String> params = new HashMap<>();
         params.put("date", _date);
         params.put("place", place);
         params.put("car_id", _carNumber);
         startDownload(SERVER_HOST + "reserve", params);
-
     }
 }
 
