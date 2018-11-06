@@ -182,7 +182,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
     }
 
     public void choose_photo(View view) {
-        startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+        startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
     }
     public static String BitmapToString(Bitmap bitmap) {
         try {
@@ -209,7 +209,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
 
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                bitmap_result = BitmapToString(bitmap);
+                //bitmap_result = BitmapToString(bitmap);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
