@@ -39,6 +39,8 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
     private String _date;
 
 
+
+
     public final void startDownload(String url, Map<String, String> params) {
         if (!_downloading && _networkFragment != null) {
             _networkFragment.startDownload(url, params);
@@ -96,6 +98,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
             return;
         }
 
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 ReserveActivity.this,
                 android.R.layout.simple_spinner_dropdown_item,
@@ -143,7 +146,6 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
         if (_networkFragment != null) {
             _networkFragment.cancelDownload();
         }
-
     }
 
     public void showDatePickerDialog(View v) {
@@ -170,5 +172,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
         params.put("car_id", _carNumber);
         startDownload(SERVER_HOST + "reserve", params);
     }
+
+
 }
 

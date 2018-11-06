@@ -1,21 +1,33 @@
 package com.henculus.parkingmanager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Picture;
+import android.graphics.drawable.PictureDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +35,7 @@ import java.util.Objects;
 
 public class RegActivity extends FragmentActivity implements DownloadCallback<String>, TextWatcher {
 
+    private static final int GET_FROM_GALLERY = 1;
     private boolean _downloading;
 
     private NetworkFragment _networkFragment;
@@ -33,10 +46,19 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
 
     private TextView _debug;
 
+    private ImageView _imageView;
+
+    private Bitmap bitmap = null;
+
+    private String bitmap_result;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reg);
+
+        _imageView = findViewById(R.id.imageView);
 
         _debug = findViewById(R.id.debug);
 
@@ -53,6 +75,8 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
         _inputFields.put("phone", (EditText) findViewById(R.id.phone));
         _inputFields.put("car_id", (EditText) findViewById(R.id.car_id));
 
+
+
         for (EditText inputField : _inputFields.values()) {
             inputField.addTextChangedListener(this);
             setError(inputField, getResources().getString(R.string.empty_error));
@@ -65,6 +89,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
         for (Map.Entry<String, EditText> entry : _inputFields.entrySet()) {
             params.put(entry.getKey(), String.valueOf(entry.getValue().getText()));
         }
+        params.put("picture", bitmap_result);
         request(SERVER_HOST + "register", params);
     }
 
@@ -80,6 +105,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
         JSONObject response;
         try {
             response = new JSONObject(result);
+
             if (response.getString("result").equals("success")) {
                 Intent intent = new Intent(RegActivity.this, ReserveActivity.class);
                 String txtData = String.valueOf(Objects.requireNonNull(_inputFields.get("car_id")).getText());
@@ -155,4 +181,42 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
     public void onProgressUpdate(int progressCode, int percentComplete) {
     }
 
+    public void choose_photo(View view) {
+        startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+    }
+    public static String BitmapToString(Bitmap bitmap) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+            String temp = Base64.encodeToString(b, Base64.DEFAULT);
+            return temp;
+        } catch (NullPointerException e) {
+            return null;
+        } catch (OutOfMemoryError e) {
+            return null;
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        //Detects request codes
+        if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            _imageView.setImageURI(selectedImage);
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                bitmap_result = BitmapToString(bitmap);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 }
