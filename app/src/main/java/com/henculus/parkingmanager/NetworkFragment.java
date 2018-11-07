@@ -13,6 +13,7 @@ import android.util.Pair;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -57,7 +58,7 @@ public class NetworkFragment extends Fragment {
         return networkFragment;
     }
 
-    public void startDownload(String url, Map<String, String> params) {
+    public void startDownload(String url, Map<String, String> params, String postParam) {
         cancelDownload();
         StringBuilder request = new StringBuilder(url);
         request.append("?");
@@ -68,9 +69,8 @@ public class NetworkFragment extends Fragment {
             request.append("&");
         }
         _downloadTask = new DownloadTask(_callback);
-        _downloadTask.execute(request.toString());
+        _downloadTask.execute(request.toString(), postParam);
     }
-
 
     public void cancelDownload() {
         if (_downloadTask != null) {
@@ -122,10 +122,11 @@ public class NetworkFragment extends Fragment {
 
                 try {
                     URL url = new URL(urlString);
-                    String resultString = downloadUrl(url);
+                    String resultString = downloadUrl(url, params[1]);
                     if (resultString != null) {
                         result = new Result(resultString);
                     } else {
+
                         throw new IOException("No response received.");
                     }
 
@@ -152,7 +153,7 @@ public class NetworkFragment extends Fragment {
         protected void onCancelled(Result result) {
         }
 
-        private String downloadUrl(URL url) throws IOException {
+        private String downloadUrl(URL url, String postParams) throws IOException {
             InputStream stream = null;
             HttpURLConnection connection = null;
             String result = null;
@@ -160,9 +161,12 @@ public class NetworkFragment extends Fragment {
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setReadTimeout(3000);
                 connection.setConnectTimeout(3000);
-                connection.setRequestMethod("GET");
+                connection.setRequestMethod("POST");
                 connection.setDoInput(true);
                 connection.connect();
+                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
+                writer.write(postParams);
+                writer.close();
                 publishProgress(DownloadCallback.Progress.CONNECT_SUCCESS);
                 int responseCode = connection.getResponseCode();
                 if (responseCode != HttpURLConnection.HTTP_OK) {

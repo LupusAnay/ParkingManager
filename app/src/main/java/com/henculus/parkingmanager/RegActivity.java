@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -89,16 +90,16 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
         for (Map.Entry<String, EditText> entry : _inputFields.entrySet()) {
             params.put(entry.getKey(), String.valueOf(entry.getValue().getText()));
         }
-        params.put("picture", bitmap_result);
-        request(SERVER_HOST + "register", params);
+        request(SERVER_HOST + "register", params, bitmap_result);
     }
 
-    public void request(String url, Map<String, String> params) {
+    public void request(String url, Map<String, String> getParams, String postParams) {
         if (!_downloading && _networkFragment != null) {
-            _networkFragment.startDownload(url, params);
+            _networkFragment.startDownload(url, getParams, postParams);
             _downloading = true;
         }
     }
+
 
     @Override
     public void updateFromDownload(String result) {
@@ -209,7 +210,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
 
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                //bitmap_result = BitmapToString(bitmap);
+                bitmap_result = BitmapToString(bitmap);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
