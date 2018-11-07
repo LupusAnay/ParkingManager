@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.util.Pair;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -156,9 +158,12 @@ public class NetworkFragment extends Fragment {
         private String downloadUrl(URL url, String postParams) throws IOException {
             InputStream stream = null;
             HttpURLConnection connection = null;
+
             String result = null;
             try {
                 connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("charset", "UTF-8");
                 connection.setReadTimeout(3000);
                 connection.setConnectTimeout(3000);
                 connection.setRequestMethod("POST");
@@ -175,7 +180,7 @@ public class NetworkFragment extends Fragment {
                 stream = connection.getInputStream();
                 publishProgress(DownloadCallback.Progress.GET_INPUT_STREAM_SUCCESS, 0);
                 if (stream != null) {
-                    result = readStream(stream, 500);
+                    result = readStream(stream, 5000000);
                 }
 
             } finally {

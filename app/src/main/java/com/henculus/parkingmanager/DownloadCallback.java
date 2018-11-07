@@ -3,7 +3,7 @@ package com.henculus.parkingmanager;
 import android.net.NetworkInfo;
 
 interface DownloadCallback<T> {
-    String SERVER_HOST = "https://parking--lupusanay.repl.co/";
+    String SERVER_HOST = "http://192.168.100.15/";
 
     interface Progress {
         int ERROR = -1;

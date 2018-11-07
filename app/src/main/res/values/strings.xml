@@ -14,4 +14,8 @@
     <string name="empty_error">Поле не должно быть пустым</string>
     <string name="server_error">Получены невалидные данные</string>
     <string name="add_photo">Добавить фото</string>
+    <string name="goto_register">Регистрация</string>
+    <string name="goto_inspector">Инспектор</string>
+    <string name="find">Найти</string>
+    <string name="list_of_orders">Список заказов</string>
 </resources>

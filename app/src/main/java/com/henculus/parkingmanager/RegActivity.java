@@ -90,7 +90,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
         for (Map.Entry<String, EditText> entry : _inputFields.entrySet()) {
             params.put(entry.getKey(), String.valueOf(entry.getValue().getText()));
         }
-        request(SERVER_HOST + "register", params, bitmap_result);
+        request(SERVER_HOST + "register.php", params, bitmap_result);
     }
 
     public void request(String url, Map<String, String> getParams, String postParams) {
