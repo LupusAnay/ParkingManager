@@ -117,7 +117,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            _debug.setText(getString(R.string.server_error));
+            _debug.setText(result);
         }
     }
 

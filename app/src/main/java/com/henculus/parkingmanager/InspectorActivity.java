@@ -2,6 +2,8 @@ package com.henculus.parkingmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.FragmentActivity;
@@ -11,8 +13,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -23,25 +28,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class InspectorActivity extends FragmentActivity implements DownloadCallback<String>, TextWatcher {
+public class InspectorActivity extends FragmentActivity implements DownloadCallback<String> {
 
     private NetworkFragment _networkFragment;
     boolean _downloading;
     EditText carnumber_input;
     String _carnumber;
     TextView _debug;
-    JSONObject customer_data;
     TextView first_name;
     TextView second_name;
     TextView address;
     TextView phone;
     TextView date;
     TextView place;
+    LinearLayout linearLayout;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inspector);
+        imageView =  findViewById(R.id.imageView);
+        linearLayout = findViewById(R.id.linearLayout);
         carnumber_input = findViewById(R.id.carnumber_input);
         _debug = findViewById(R.id.debug_field);
         first_name = findViewById(R.id.first_name);
@@ -50,18 +58,16 @@ public class InspectorActivity extends FragmentActivity implements DownloadCallb
         phone = findViewById(R.id.phone);
         date = findViewById(R.id.textViewDate);
         place = findViewById(R.id.textViewPlace);
+        _networkFragment = NetworkFragment.getInstance(getSupportFragmentManager());
 
     }
 
-    public void search_by_number(View view) {
-        _carnumber = carnumber_input.getText().toString();
-
-    }
 
     public void search(View view) {
+        _carnumber = carnumber_input.getText().toString();
         Map<String, String> params = new HashMap<>();
         params.put("carnumber", _carnumber);
-        request(SERVER_HOST + "search", params, null);
+        request(SERVER_HOST + "search.php", params, "");
     }
 
     public void request(String url, Map<String, String> getParams, String postParams) {
@@ -76,14 +82,25 @@ public class InspectorActivity extends FragmentActivity implements DownloadCallb
     public void updateFromDownload(String result) {
 
         try {
-            customer_data = new JSONObject(result);
-            for (int i = 0; i < customer_data.length(); i++) {
-                //String place = customer_data.getString(i);
-                //AvailablePlaces.add(place);
+            JSONObject customer_data = new JSONObject(result);
+            JSONObject user_data  = customer_data.getJSONObject("user_data");
+            String user_pic = customer_data.getString("user_pic");
+            JSONArray orders = customer_data.getJSONArray("orders");
+
+            decodeImage(user_pic);
+            first_name.setText(user_data.getString("FIRST_NAME"));
+            second_name.setText(user_data.getString("SECOND_NAME"));
+            address.setText(user_data.getString("ADDRESS"));
+            phone.setText(user_data.getString("PHONE"));
+            for (int i = 0; i < orders.length(); i++) {
+                JSONObject orders_data = orders.getJSONObject(i);
+                place.append(orders_data.getString("PLACE_ID")+"\n");
+                date.append(orders_data.getString("ORDERDATE")+"\n");
             }
+            linearLayout.setVisibility(View.VISIBLE);
         } catch (JSONException e) {
             e.printStackTrace();
-            _debug.setText(getString(R.string.server_error));
+            _debug.setText(result);
         }
     }
 
@@ -106,47 +123,9 @@ public class InspectorActivity extends FragmentActivity implements DownloadCallb
             _networkFragment.cancelDownload();
         }
     }
-
-    public boolean isEmpty(EditText text) {
-        String input = text.getText().toString().trim();
-        return input.length() == 0;
-    }
-
-    public void setError(EditText editText, String errorString) {
-
-        editText.setError(errorString);
-
-    }
-
-    public void clearError(EditText editText) {
-        editText.setError(null);
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        //boolean haveEmpty = false;
-       //for (EditText inputField : _inputFields.values()) {
-           // if (isEmpty(inputField)) {
-              //  setError(inputField, getString(R.string.empty_error));
-             //   _register.setEnabled(false);
-            //    haveEmpty = true;
-           // } else {
-           //     clearError(inputField);
-          //  }
-       // }
-//
-      //  if (!haveEmpty) {
-          //  _register.setEnabled(true);
-       // }
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
+    public void decodeImage(String image_code){
+        byte[] decodedString = Base64.decode(image_code, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        imageView.setImageBitmap(decodedByte);
     }
 }

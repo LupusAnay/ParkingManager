@@ -17,10 +17,11 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:onClick="search_by_number"
+        android:onClick="search"
         android:text="@string/find" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -158,7 +158,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
         _date = date;
         Map<String, String> params = new HashMap<>();
         params.put("date", date);
-        startDownload(SERVER_HOST + "places", params);
+        startDownload(SERVER_HOST + "places.php", params);
 
     }
 
@@ -170,7 +170,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
         params.put("date", _date);
         params.put("place", place);
         params.put("car_id", _carNumber);
-        startDownload(SERVER_HOST + "reserve", params);
+        startDownload(SERVER_HOST + "reserve.php", params);
     }
 
 
