@@ -66,7 +66,7 @@ public class InspectorActivity extends FragmentActivity implements DownloadCallb
     public void search(View view) {
         _carnumber = carnumber_input.getText().toString();
         Map<String, String> params = new HashMap<>();
-        params.put("carnumber", _carnumber);
+        params.put("car_id", _carnumber);
         request(SERVER_HOST + "search.php", params, "");
     }
 
