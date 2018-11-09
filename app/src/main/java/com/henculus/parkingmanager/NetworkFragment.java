@@ -60,7 +60,14 @@ public class NetworkFragment extends Fragment {
         return networkFragment;
     }
 
-    public void startDownload(String url, Map<String, String> params, String postParam) {
+    public void postRequest(String url, JSONObject params) {
+        cancelDownload();
+
+        _downloadTask = new DownloadTask(_callback);
+        _downloadTask.execute(url, params.toString(), "POST");
+    }
+
+    public void getRequest(String url, Map<String, String> params) {
         cancelDownload();
         StringBuilder request = new StringBuilder(url);
         request.append("?");
@@ -71,7 +78,7 @@ public class NetworkFragment extends Fragment {
             request.append("&");
         }
         _downloadTask = new DownloadTask(_callback);
-        _downloadTask.execute(request.toString(), postParam);
+        _downloadTask.execute(request.toString(), "", "GET");
     }
 
     public void cancelDownload() {
@@ -121,10 +128,12 @@ public class NetworkFragment extends Fragment {
             Result result = null;
             if (!isCancelled() && params != null && params.length > 0) {
                 String urlString = params[0];
+                String postData = params[1];
+                String method = params[2];
 
                 try {
                     URL url = new URL(urlString);
-                    String resultString = downloadUrl(url, params[1]);
+                    String resultString = downloadUrl(method, url, postData);
                     if (resultString != null) {
                         result = new Result(resultString);
                     } else {
@@ -155,23 +164,25 @@ public class NetworkFragment extends Fragment {
         protected void onCancelled(Result result) {
         }
 
-        private String downloadUrl(URL url, String postParams) throws IOException {
+        private String downloadUrl(String method, URL url, String postParams) throws IOException {
             InputStream stream = null;
             HttpURLConnection connection = null;
 
             String result = null;
             try {
                 connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestProperty("charset", "UTF-8");
                 connection.setReadTimeout(3000);
                 connection.setConnectTimeout(3000);
-                connection.setRequestMethod("POST");
+                connection.setRequestMethod(method);
                 connection.setDoInput(true);
-                connection.connect();
                 OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8");
-                writer.write(postParams);
+                writer.write("\r\n" + postParams);
+                writer.flush();
                 writer.close();
+                connection.connect();
+
                 publishProgress(DownloadCallback.Progress.CONNECT_SUCCESS);
                 int responseCode = connection.getResponseCode();
                 if (responseCode != HttpURLConnection.HTTP_OK) {

@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Picture;
-import android.graphics.drawable.PictureDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -29,7 +25,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -78,7 +73,6 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
         _inputFields.put("car_id", (EditText) findViewById(R.id.car_id));
 
 
-
         for (EditText inputField : _inputFields.values()) {
             inputField.addTextChangedListener(this);
             setError(inputField, getResources().getString(R.string.empty_error));
@@ -86,17 +80,22 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
     }
 
     public void reserve(View view) {
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> paramsMap = new HashMap<>();
 
         for (Map.Entry<String, EditText> entry : _inputFields.entrySet()) {
-            params.put(entry.getKey(), String.valueOf(entry.getValue().getText()));
+            paramsMap.put(entry.getKey(), String.valueOf(entry.getValue().getText()));
         }
-        request(SERVER_HOST + "register.php", params, bitmap_result);
+
+        paramsMap.put("user_pic", bitmap_result);
+
+        JSONObject params = new JSONObject(paramsMap);
+        request(SERVER_HOST + "register", params);
     }
 
-    public void request(String url, Map<String, String> getParams, String postParams) {
+    public void request(String url, JSONObject postParams) {
+
         if (!_downloading && _networkFragment != null) {
-            _networkFragment.startDownload(url, getParams, postParams);
+            _networkFragment.postRequest(url, postParams);
             _downloading = true;
         }
     }
@@ -186,6 +185,7 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
     public void choose_photo(View view) {
         startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
     }
+
     public String BitmapToString(Bitmap bitmap) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -199,13 +199,14 @@ public class RegActivity extends FragmentActivity implements DownloadCallback<St
             return null;
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
 
         //Detects request codes
-        if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+        if (requestCode == GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
             Uri selectedImage = data.getData();
             _imageView.setImageURI(selectedImage);
 

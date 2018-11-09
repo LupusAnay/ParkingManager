@@ -43,7 +43,7 @@ public class ReserveActivity extends FragmentActivity implements DownloadCallbac
 
     public final void startDownload(String url, Map<String, String> params) {
         if (!_downloading && _networkFragment != null) {
-            _networkFragment.startDownload(url, params, "");
+            _networkFragment.getRequest(url, params);
             _downloading = true;
         }
     }

@@ -1,18 +1,12 @@
 package com.henculus.parkingmanager;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
@@ -26,7 +20,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class InspectorActivity extends FragmentActivity implements DownloadCallback<String> {
 
@@ -67,13 +60,13 @@ public class InspectorActivity extends FragmentActivity implements DownloadCallb
         _carnumber = carnumber_input.getText().toString();
         Map<String, String> params = new HashMap<>();
         params.put("car_id", _carnumber);
-        request(SERVER_HOST + "search.php", params, "");
+        request(SERVER_HOST + "search", params);
     }
 
-    public void request(String url, Map<String, String> getParams, String postParams) {
+    public void request(String url, Map<String, String> getParams) {
 
         if (!_downloading && _networkFragment != null) {
-            _networkFragment.startDownload(url, getParams, postParams);
+            _networkFragment.getRequest(url, getParams);
             _downloading = true;
         }
     }
